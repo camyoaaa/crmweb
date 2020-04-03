@@ -1,0 +1,296 @@
+<template>
+  <a-card :bordered="false">
+    <div class="table-page-search-wrapper">
+      <a-form layout="inline">
+        <a-row :gutter="48">
+          <a-col :md="6" :sm="24">
+            <a-form-item label="客户编号">
+              <id-input v-model="queryParam.cid" placeholder="输入客户编号" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-form-item label="客户名称">
+              <a-input v-model="queryParam.name" placeholder="输入客户名称" />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-form-item label="联系方式">
+              <a-input
+                v-model="queryParam.contact"
+                placeholder="QQ/手机/微信号"
+              />
+            </a-form-item>
+          </a-col>
+          <a-col :md="6" :sm="24">
+            <a-form-item label="销售人员">
+              <staff-select
+                v-model="queryParam.seller"
+                :did="did"
+                :pid="pid"
+                :admin="isadmin"
+                placeholder="请选择销售人员"
+              />
+            </a-form-item>
+          </a-col>
+        </a-row>
+      </a-form>
+    </div>
+
+    <div class="table-operator" style="margin-bottom:18px">
+      <a-button type="primary" @click="$refs.table.refresh(true)" icon="search"
+        >查询</a-button
+      >
+      <a-button
+        type="primary"
+        @click="
+          () => {
+            queryParam = {};
+            $refs.table.refresh(true);
+          }
+        "
+        icon="redo"
+        >重置</a-button
+      >
+    </div>
+    <a-spin :spinning="queryLoading">
+      <s-table
+        ref="table"
+        :rowKey="record => record.cid"
+        :alert="false"
+        :columns="columns"
+        :data="loadData"
+        showPagination="auto"
+        :pagination="pagination"
+      >
+        <span slot="receptTime" slot-scope="text">
+          {{ text | dateformat }}
+        </span>
+        <span slot="sellerAllocTime" slot-scope="text">
+          {{ text | dateformat }}
+        </span>
+        <span slot="status" slot-scope="text, record">
+          <a-badge
+            :color="record.status_doc.color"
+            :text="record.status_doc.name"
+          />
+        </span>
+        <span slot="remark" slot-scope="text, record">
+          <ellipsis :length="10" tooltip>{{ record.remark }}</ellipsis>
+        </span>
+        <span slot="seller" slot-scope="text, record">
+          <div v-if="record.editing" style="display:flex;align-items:center">
+            <staff-select
+              style="flex:1;width:150px"
+              :did="did"
+              :pid="pid"
+              :admin="isadmin"
+              onduty
+              placeholder="请选择销售人员"
+              v-model="record.seller"
+              size="small"
+            />
+            <a-button
+              @click="updateCustom(record)"
+              size="small"
+              type="primary"
+              :disabled="!record.seller"
+              >确定</a-button
+            >
+            <a-button @click="cancelEdit(record)" size="small" type="dashed"
+              >取消</a-button
+            >
+          </div>
+          <div v-else>
+            <div v-if="record.seller_doc[0] && record.seller_doc[0].name">
+              {{ record.seller_doc[0].name }}
+              <a-button @click="editCustom(record)" size="small" type="primary"
+                >转移</a-button
+              >
+            </div>
+            <a-button
+              v-else
+              @click="editCustom(record)"
+              size="small"
+              type="primary"
+              >分配销售</a-button
+            >
+          </div>
+        </span>
+      </s-table>
+    </a-spin>
+  </a-card>
+</template>
+
+<script>
+import Ellipsis from "@/commonItems/Ellipsis";
+import {
+  getSellerAllocList,
+  deleteCustom,
+  modify,
+  sellerAlloc
+} from "@/myapi/custom.js";
+import { mapState } from "vuex";
+export default {
+  name: "TableList",
+  components: {
+    Ellipsis
+  },
+  computed: {
+    ...mapState({
+      did: state => state.user.department,
+      pid: state => state.user.post,
+      isadmin: state => state.user.isadmin,
+      sellerManager: state => state.user.account
+    })
+  },
+  data() {
+    return {
+      // 查询参数
+      queryParam: {},
+      queryLoading: false,
+      fuzzies: ["name"], //模糊查询字段
+      editingCache: {}, //用做编辑缓存
+      // 表头
+      columns: [
+        {
+          title: "编号",
+          dataIndex: "cid",
+          width: "100px"
+        },
+        {
+          title: "姓名",
+          dataIndex: "name",
+          width: "150px",
+          scopedSlots: { customRender: "name" }
+        },
+        {
+          title: "来源",
+          dataIndex: "from_doc.name",
+          width: "120px"
+        },
+        {
+          title: "手机",
+          dataIndex: "phone",
+          width: "200px"
+        },
+        {
+          title: "微信",
+          dataIndex: "wx",
+          width: "160px"
+        },
+        {
+          title: "QQ",
+          dataIndex: "qq",
+          width: "160px"
+        },
+        {
+          title: "备注",
+          dataIndex: "remark",
+          width: "150px",
+          scopedSlots: { customRender: "remark" }
+        },
+        {
+          title: "接待员",
+          dataIndex: "receptionist_doc.name",
+          width: "150px"
+        },
+        {
+          title: "接待时间",
+          dataIndex: "receptTime",
+          width: "200px",
+          scopedSlots: { customRender: "receptTime" }
+        },
+        {
+          title: "分配时间",
+          dataIndex: "sellerAllocTime",
+          width: "200px",
+          scopedSlots: { customRender: "sellerAllocTime" }
+        },
+
+        {
+          title: "状态",
+          dataIndex: "status",
+          width: "100px",
+          scopedSlots: { customRender: "status" }
+        },
+        {
+          title: "售前人员",
+          dataIndex: "seller",
+          width: "180px",
+          scopedSlots: { customRender: "seller" }
+        }
+      ],
+      // 查询已录入的客户信息 加载数据方法 必须为 Promise 对象
+      loadData: parameter => {
+        this.queryLoading = true;
+        return getSellerAllocList(
+          Object.assign(parameter, this.queryParam, {
+            fuzzies: this.fuzzies
+          })
+        )
+          .then(res => {
+            this.queryLoading = false;
+            res.result.data = res.result.data.map(x => ({
+              ...x,
+              editing: false
+            }));
+            return res.result;
+          })
+          .catch(_ => (this.queryLoading = false));
+      },
+      pagination: {
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        showQuickJumper: true,
+        showTotal: total => `共 ${total} 条数据`
+      }
+    };
+  },
+  methods: {
+    //更新客户
+    async updateCustom(record) {
+      record.editing = false;
+      this.editingCache = {};
+      try {
+        let modifySuccess = await sellerAlloc({
+          cid: record.cid,
+          seller: record.seller,
+          sellerManager: this.sellerManager
+        });
+        this.$notification.success({
+          $message: "成功",
+          description: "客户更新成功"
+        });
+        this.$refs.table.refresh();
+      } catch (error) {}
+    },
+    //删除客户
+    async deleteCustom(cids) {
+      try {
+        let deleteSuccess = await deleteCustom(cids);
+        this.$notification.success({
+          $message: "成功",
+          description: "客户删除成功"
+        });
+        this.$refs.table.refresh();
+      } catch (error) {
+        console.log(error);
+      }
+    },
+    //编辑客户
+    editCustom(record) {
+      record.editing = true;
+      this.editingCache = { ...record };
+    },
+    //取消编辑
+    cancelEdit(record) {
+      for (const key in record) {
+        if (record.hasOwnProperty(key)) {
+          record[key] = this.editingCache[key];
+        }
+      }
+      record.editing = false;
+      this.editingCache = {};
+    }
+  }
+};
+</script>
