@@ -20,6 +20,8 @@ export function getList(parameter) {
   })
 }
 
+
+//分配销售
 export function sellerAlloc({
   cid,
   seller,
@@ -63,10 +65,10 @@ export function getSellerCustomList(parameter) {
   })
 }
 
-//获取已经下单的客户
-export function getOrderedList(parameter) {
+//获取已经下单的客户   ----- 售后经理
+export function getOrderedCustomList(parameter) {
   return kaxios({
-    url: '/custom/orderedlist',
+    url: '/custom/orderedCustomlist',
     method: 'get',
     params: parameter
   })
@@ -84,6 +86,16 @@ export function getAftersaleList(parameter) {
 export function getOne(cid) {
   return kaxios({
     url: '/custom/',
+    method: 'get',
+    params: {
+      cid
+    }
+  })
+}
+
+export function getCustomDetail(cid) {
+  return kaxios({
+    url: '/custom/detail',
     method: 'get',
     params: {
       cid
