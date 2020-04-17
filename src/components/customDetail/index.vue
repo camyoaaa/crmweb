@@ -11,7 +11,7 @@
                     <a-descriptions :column="3">
                         <a-descriptions-item label="客户名称">{{customDetail.name}}</a-descriptions-item>
                         <a-descriptions-item label="客户编号">{{customDetail.cid}}</a-descriptions-item>
-                        <a-descriptions-item label="客户来源">{{customDetail.fromInfo.name}}</a-descriptions-item>
+                        <a-descriptions-item label="客户来源">{{customDetail.from_doc.name}}</a-descriptions-item>
                         <a-descriptions-item label="身份证号">{{customDetail.idcard}}</a-descriptions-item>
                         <a-descriptions-item label="客户手机">{{customDetail.phone}}</a-descriptions-item>
                         <a-descriptions-item label="客户微信">{{customDetail.wx}}</a-descriptions-item>
@@ -25,9 +25,9 @@
                 </div>
                 <div class="extra">
                     <div style="display:flex;width:max-content;width:200px;height:100%;align-items:flex-start;justify-content: center;flex-direction:column">
-                        <a-progress type="circle" :width="90" :percent="100" :strokeColor="customDetail.statusInfo.color">
+                        <a-progress type="circle" :width="90" :percent="100" :strokeColor="customDetail.status_doc.color">
                             <template v-slot:format>
-                                <span style="color: red;font-weight:bold;font-size:18px">{{customDetail.statusInfo.name}}</span>
+                                <span style="font-weight:bold;font-size:18px" :style="{color:customDetail.status_doc.color}">{{customDetail.status_doc.name}}</span>
                             </template>
                         </a-progress>
                     </div>
@@ -67,31 +67,16 @@
 </template>
 
 <script>
-import { getCustomDetail } from "@/myapi/custom.js";
+import { getList as getCustomDetail } from "@/myapi/custom.js";
 import { getList } from "@/myapi/order.js";
-const OpenStatus = {
-    1: "未知",
-    2: "营业中",
-    3: "未营业"
-};
-const TeachStep = {
-    1: "未开始",
-    2: "初级阶段",
-    3: "中级阶段",
-    4: "高级阶段"
-};
-const ActivityStatus = {
-    1: "未开始",
-    2: "审核中",
-    3: "已完成"
-};
+
 export default {
     data() {
         return {
             spinning: false,
             customDetail: {
-                statusInfo: {},
-                fromInfo: {}
+                status_doc: {},
+                from_doc: {}
             },
             orderList: [],
             orderColumns: [
@@ -152,8 +137,12 @@ export default {
         async getCustomDetail() {
             try {
                 this.spinning = true;
-                let result = await getCustomDetail(this.$route.query.cid);
-                this.customDetail = result.data;
+                // let result = await getCustomDetail(this.$route.query.cid);
+                let result = await getCustomDetail({
+                    cid: this.$route.query.cid
+                });
+                this.customDetail = result.result.data[0];
+                // this.customDetail = result.data;
             } catch (error) {
             } finally {
                 this.spinning = false;

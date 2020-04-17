@@ -1,0 +1,23 @@
+{
+  "name": "webpack_crm",
+  "description": "A Vue.js project",
+  "main": "",
+  "authors": [
+    "cam <1743982333@qq.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/camyoaaa/crmweb",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "inotify": "^2.0.10"
+  },
+  "devDependencies": {
+    "inotify": "^2.0.10"
+  }
+}

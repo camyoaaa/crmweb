@@ -80,9 +80,9 @@ export function addReceipt(parameter) { //新增收据
   })
 }
 
-export function afterAlloc(parameter) {
+export function alloc(parameter) {
   return kaxios({
-    url: '/order/afterAlloc',
+    url: '/order/alloc',
     method: 'put',
     data: parameter
   })

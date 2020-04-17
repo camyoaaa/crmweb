@@ -32,12 +32,14 @@
             <a-button type="primary" icon='redo' @click="resetQueryparams">重置</a-button>
         </div>
         <s-table ref="table" size="default" rowKey="cid" :columns="columns" :data="loadData" showPagination="auto" :pagination="pagination">
-            <span slot="sellerAllocTime" slot-scope="text, record">
+            <span slot="allocTime" slot-scope="text, record">
                 <div>{{ text | dateformat }}</div>
+            </span>
+            <span slot="cid" slot-scope="text, record">
+                <router-link :to="{path:'/customDetail',query:{cid:text}}">{{text}}</router-link>
             </span>
             <span slot="status" slot-scope="text, record">
                 <a-badge :color="record.status_doc.color" :text="record.status_doc.name"></a-badge>
-                <!-- <a-badge :count="record.orderList.length" size="small" :numberStyle="{backgroundColor: '#52c41a'}"></a-badge> -->
             </span>
             <span slot="followList" slot-scope="text, record">
                 {{ getNewestRecord(record.followList) }}
@@ -54,15 +56,13 @@
                 </a-button>
             </span>
         </s-table>
-        <!-- <enter-yeji ref="enteryeji"></enter-yeji>
-        <contract-drawer ref="contractdr"></contract-drawer> -->
         <sign-order ref="signOrder" @success="queryTable"></sign-order>
         <order-manage ref="ordermanage" @success="queryTable"></order-manage>
     </a-card>
 </template>
 
 <script>
-import { deleteCustom, modify, getSellerCustomList } from "@/myapi/custom.js";
+import { deleteCustom, modify, getList } from "@/myapi/custom.js";
 import SignOrder from "./SignOrder";
 import OrderManage from "./OrderManage";
 
@@ -89,6 +89,7 @@ export default {
                 {
                     title: "编号",
                     dataIndex: "cid",
+                    scopedSlots: { customRender: "cid" },
                     width: "100px"
                 },
                 {
@@ -124,8 +125,8 @@ export default {
 
                 {
                     title: "分配时间",
-                    dataIndex: "sellerAllocTime",
-                    scopedSlots: { customRender: "sellerAllocTime" }
+                    dataIndex: "allocTime",
+                    scopedSlots: { customRender: "allocTime" }
                 },
                 {
                     title: "状态",
@@ -150,7 +151,7 @@ export default {
             ],
             // 加载数据方法 必须为 Promise 对象
             loadData: parameter => {
-                return getSellerCustomList(
+                return getList(
                     Object.assign(parameter, this.queryParam, {
                         seller: this.seller,
                         fuzzies: this.fuzzies

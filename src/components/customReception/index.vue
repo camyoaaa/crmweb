@@ -52,24 +52,27 @@
           selectedRowKeys: selectedRowKeys,
           onChange: onSelectChange
         }" showPagination="auto" :pagination="pagination">
+                <span slot="cid" slot-scope="text, record">
+                    <router-link :to="{path:'/customDetail',query:{cid:text}}">{{text}}</router-link>
+                </span>
                 <span slot="name" slot-scope="text, record">
-                    <a-input v-if="record.editing" v-model="record.name" />
+                    <a-input size="small" v-if="record.editing" v-model="record.name" />
                     <div v-else>{{ text }}</div>
                 </span>
                 <span slot="phone" slot-scope="text, record">
-                    <a-input v-if="record.editing" v-model="record.phone" />
+                    <id-input size="small" v-if="record.editing" v-model="record.phone" />
                     <div v-else>{{ text }}</div>
                 </span>
                 <span slot="wx" slot-scope="text, record">
-                    <a-input v-if="record.editing" v-model="record.wx" />
+                    <a-input size="small" v-if="record.editing" v-model="record.wx" />
                     <div v-else>{{ text }}</div>
                 </span>
                 <span slot="qq" slot-scope="text, record">
-                    <a-input v-if="record.editing" v-model="record.qq" />
+                    <id-input size="small" v-if="record.editing" v-model="record.qq" />
                     <div v-else>{{ text }}</div>
                 </span>
                 <span slot="receptionistremark" slot-scope="text, record">
-                    <a-input v-if="record.editing" v-model="record.receptionistremark" />
+                    <a-input size="small" v-if="record.editing" v-model="record.receptionistremark" />
                     <div v-else>{{ text }}</div>
                 </span>
                 <span slot="receptionist" slot-scope="text">
@@ -79,7 +82,6 @@
                     {{ text | dateformat }}
                 </span>
                 <span slot="status" slot-scope="text, record">
-                    <!-- <a-tag :color="record.statusColor">{{ record.statusZn }}</a-tag> -->
                     <a-badge :color="record.status_doc.color" :text="record.status_doc.name" />
                 </span>
                 <span slot="action" slot-scope="text, record">
@@ -105,7 +107,7 @@
 <script>
 import Ellipsis from "@/commonItems/Ellipsis";
 import CreateForm from "./CreateForm";
-import { getReceptList, deleteCustom, modify } from "@/myapi/custom.js";
+import { getList, deleteCustom, modify } from "@/myapi/custom.js";
 import { mapState } from "vuex";
 export default {
     name: "TableList",
@@ -132,7 +134,8 @@ export default {
                 {
                     title: "编号",
                     dataIndex: "cid",
-                    width: "100px"
+                    width: "100px",
+                    scopedSlots: { customRender: "cid" }
                 },
                 {
                     title: "姓名",
@@ -165,9 +168,9 @@ export default {
                 },
                 {
                     title: "备注",
-                    dataIndex: "receptionistremark",
+                    dataIndex: "remark",
                     width: "200px",
-                    scopedSlots: { customRender: "receptionistremark" }
+                    scopedSlots: { customRender: "remark" }
                 },
                 {
                     title: "接待员",
@@ -196,7 +199,7 @@ export default {
             // 查询已录入的客户信息 加载数据方法 必须为 Promise 对象
             loadData: parameter => {
                 this.queryLoading = true;
-                return getReceptList(
+                return getList(
                     Object.assign(parameter, this.queryParam, {
                         fuzzies: this.fuzzies
                     })

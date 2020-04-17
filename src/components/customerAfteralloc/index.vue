@@ -28,6 +28,12 @@
         </div>
 
         <s-table ref="table" rowKey="oid" :columns="columns" :data="loadData" showPagination="auto" :pagination="pagination">
+            <span slot="oid" slot-scope="text, record">
+                <router-link :to="{path:'/orderDetail',query:{oid:text}}">{{text}}</router-link>
+            </span>
+            <span slot="cid" slot-scope="text, record">
+                <router-link :to="{path:'/customDetail',query:{cid:text}}">{{text}}</router-link>
+            </span>
             <span slot="amount" slot-scope="text, record">
                 {{text | numformat}}
             </span>
@@ -60,7 +66,7 @@
 </template>
 
 <script>
-import { getPaidPassedOrderList, afterAlloc } from "@/myapi/order.js";
+import { getPaidPassedOrderList, alloc } from "@/myapi/order.js";
 import { mapState } from "vuex";
 export default {
     name: "TableList",
@@ -82,11 +88,13 @@ export default {
                 {
                     title: "订单编号",
                     dataIndex: "oid",
+                    scopedSlots: { customRender: "oid" },
                     width: "100px"
                 },
                 {
                     title: "客户编号",
                     dataIndex: "cid",
+                    scopedSlots: { customRender: "cid" },
                     width: "100px"
                 },
                 {
@@ -187,7 +195,7 @@ export default {
         async updateOrder(order) {
             let { oid, executor, cid, remark } = order;
             try {
-                let result = await afterAlloc({
+                let result = await alloc({
                     oid,
                     executor,
                     distributor: this.distributor,

@@ -1,5 +1,7 @@
 import Vue from 'vue'
 
+import ECharts from 'vue-echarts/components/ECharts';
+
 import ProvinceSelect from '@/commonItems/ChinaDivision/ProvinceSelect.vue';
 import CitySelect from '@/commonItems/ChinaDivision/CitySelect.vue'
 import CountySelect from '@/commonItems/ChinaDivision/CountySelect.vue'
@@ -22,9 +24,10 @@ import CustomStatusSelect from '@/commonItems/CustomStatusSelect'
 import WorkIn from '@/commonItems/WorkIn'
 import Ellipsis from '@/commonItems/Ellipsis'
 import ImagePreview from '@/commonItems/ImagePreview.vue'
+import HeadInfo from '@/commonItems/HeadInfo.vue'
 
 
-
+Vue.component('chart', ECharts)
 Vue.component(ProvinceSelect.name, ProvinceSelect);
 Vue.component(CitySelect.name, CitySelect);
 Vue.component(CountySelect.name, CountySelect);
@@ -51,3 +54,4 @@ Vue.component(PayWay.name, PayWay);
 Vue.component(WorkIn.name, WorkIn);
 Vue.component(Ellipsis.name, Ellipsis);
 Vue.component(ImagePreview.name, ImagePreview);
+Vue.component(HeadInfo.name, HeadInfo);

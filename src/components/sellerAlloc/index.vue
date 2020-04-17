@@ -36,8 +36,11 @@
                 <span slot="receptTime" slot-scope="text">
                     {{ text | dateformat }}
                 </span>
-                <span slot="sellerAllocTime" slot-scope="text">
+                <span slot="allocTime" slot-scope="text">
                     {{ text | dateformat }}
+                </span>
+                <span slot="cid" slot-scope="text">
+                    <router-link :to="{path:'/customDetail',query:{cid:text}}">{{text}}</router-link>
                 </span>
                 <span slot="status" slot-scope="text, record">
                     <a-badge :color="record.status_doc.color" :text="record.status_doc.name" />
@@ -52,8 +55,8 @@
                         <a-button @click="cancelEdit(record)" size="small" type="dashed" icon="close"></a-button>
                     </div>
                     <div v-else>
-                        <div v-if="record.seller_doc[0] && record.seller_doc[0].name">
-                            {{ record.seller_doc[0].name }}
+                        <div v-if="record.seller_doc && record.seller_doc.name">
+                            {{ record.seller_doc.name }}
                             <a-button @click="editCustom(record)" size="small" type="primary" :disabled="Object.keys(editingCache).length > 0">转移</a-button>
                         </div>
                         <a-button v-else @click="editCustom(record)" size="small" type="primary" :disabled="Object.keys(editingCache).length > 0">分配销售</a-button>
@@ -66,7 +69,7 @@
 
 <script>
 import Ellipsis from "@/commonItems/Ellipsis";
-import { getSellerAllocList, modify, sellerAlloc } from "@/myapi/custom.js";
+import { getList, modify, alloc } from "@/myapi/custom.js";
 import { mapState } from "vuex";
 export default {
     name: "TableList",
@@ -93,6 +96,7 @@ export default {
                 {
                     title: "编号",
                     dataIndex: "cid",
+                    scopedSlots: { customRender: "cid" },
                     width: "100px"
                 },
                 {
@@ -140,9 +144,9 @@ export default {
                 },
                 {
                     title: "分配时间",
-                    dataIndex: "sellerAllocTime",
+                    dataIndex: "allocTime",
                     width: "150px",
-                    scopedSlots: { customRender: "sellerAllocTime" }
+                    scopedSlots: { customRender: "allocTime" }
                 },
                 {
                     title: "状态",
@@ -160,7 +164,7 @@ export default {
             // 查询已录入的客户信息 加载数据方法 必须为 Promise 对象
             loadData: parameter => {
                 this.queryLoading = true;
-                return getSellerAllocList(
+                return getList(
                     Object.assign(parameter, this.queryParam, {
                         fuzzies: this.fuzzies
                     })
@@ -188,7 +192,7 @@ export default {
             record.editing = false;
             this.editingCache = {};
             try {
-                let modifySuccess = await sellerAlloc({
+                let modifySuccess = await alloc({
                     cid: record.cid,
                     seller: record.seller,
                     sellerManager: this.sellerManager

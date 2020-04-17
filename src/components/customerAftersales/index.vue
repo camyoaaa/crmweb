@@ -57,6 +57,11 @@
             <span slot="allocTime" slot-scope="text, record">
                 {{ text | dateformat }}
             </span>
+
+            <span slot="followRecord" slot-scope="text, record">
+                {{getNewestRecord(record.followList)}}
+
+            </span>
             <span slot="action" slot-scope="text, record">
                 <a-button size="small" type="primary" @click="followCustom(record)">跟进</a-button>
             </span>
@@ -65,16 +70,10 @@
 </template>
 
 <script>
-import Ellipsis from "@/commonItems/Ellipsis";
 import { getPaidPassedOrderList } from "@/myapi/order.js";
-import { getAftersaleList, deleteCustom, modify } from "@/myapi/custom.js";
 import { mapState } from "vuex";
 
 export default {
-    name: "TableList",
-    components: {
-        Ellipsis
-    },
     computed: {
         ...mapState({
             aftersale: state => state.user.account
@@ -82,11 +81,9 @@ export default {
     },
     data() {
         return {
-            // 高级搜索 展开/关闭
-            advanced: false,
             // 查询参数
             queryParam: {},
-            fuzzies: ["name", "phone", "wx", "keywords"],
+            fuzzies: [], //模糊查询字段
             // 表头
             columns: [
                 {
@@ -132,6 +129,7 @@ export default {
                 {
                     title: "有无合同",
                     dataIndex: "hasContract",
+                    width: "150px",
                     scopedSlots: { customRender: "hasContract" }
                 },
                 {
@@ -141,77 +139,24 @@ export default {
                     scopedSlots: { customRender: "allocTime" }
                 },
                 {
+                    title: "跟进记录",
+                    dataIndex: "followRecord",
+                    width: "200px",
+                    scopedSlots: { customRender: "followRecord" }
+                },
+                {
                     title: "操作",
                     dataIndex: "action",
                     width: "200px",
                     scopedSlots: { customRender: "action" }
                 }
-                // {
-                //     title: "客户编号",
-                //     dataIndex: "cid",
-                //     width: "100px"
-                // },
-                // {
-                //     title: "名称",
-                //     dataIndex: "name",
-
-                //     scopedSlots: { customRender: "name" }
-                // },
-                // {
-                //     title: "店铺PC地址",
-                //     dataIndex: "pcshopName"
-                // },
-                // {
-                //     title: "店铺手机地址",
-                //     dataIndex: "mbshopName",
-                //     scopedSlots: { customRender: "mbshopName" }
-                // },
-                // {
-                //     title: "教学阶段",
-                //     dataIndex: "teachStep",
-                //     scopedSlots: { customRender: "teachStep" }
-                // },
-                // {
-                //     title: "活动次数",
-                //     dataIndex: "activityStep",
-                //     scopedSlots: { customRender: "activityStep" }
-                // },
-                // {
-                //     title: "活动状态",
-                //     dataIndex: "activityStatus"
-                // },
-                // {
-                //     title: "备注",
-                //     dataIndex: "remark",
-                //     scopedSlots: { customRender: "remark" }
-                // },
-                // {
-                //     title: "分配时间",
-                //     dataIndex: "allocTime",
-                //     scopedSlots: { customRender: "allocTime" }
-                // },
-                // {
-                //     title: "状态",
-                //     dataIndex: "status",
-                //     scopedSlots: { customRender: "status" }
-                // },
-                // {
-                //     title: "跟进记录",
-                //     dataIndex: "followList",
-                //     scopedSlots: { customRender: "followList" }
-                // },
-                // {
-                //     title: "操作",
-                //     dataIndex: "action",
-                //     width: "200px",
-                //     scopedSlots: { customRender: "action" }
-                // }
             ],
             // 加载数据方法 必须为 Promise 对象
             loadData: parameter => {
                 return getPaidPassedOrderList(
                     Object.assign(parameter, this.queryParam, {
-                        fuzzies: this.fuzzies
+                        fuzzies: this.fuzzies,
+                        executor: this.aftersale
                     })
                 ).then(res => {
                     res.result.data = res.result.data.map(x => ({
@@ -237,36 +182,13 @@ export default {
                 query: { oid: record.oid }
             });
         },
-        async updateStaff(record) {
-            record.editing = false;
-            try {
-                let modifySuccess = await modify(record);
-                this.$notification.success({
-                    $message: "成功",
-                    description: "客户更新成功"
-                });
-            } catch (error) {}
-        },
-        async deleteCustom(record) {
-            try {
-                let deleteSuccess = await deleteCustom({
-                    cid: record.cid
-                });
-                this.$notification.success({
-                    $message: "成功",
-                    description: "客户删除成功"
-                });
-                this.$refs.table.refresh();
-            } catch (error) {
-                console.log(error);
-            }
+        getNewestRecord(followList) {
+            return Array.isArray(followList) && followList.length > 0
+                ? followList[followList.length - 1].comment
+                : "";
         },
         getContractName(way) {
             return way == 1 ? "法大大电子合同" : "现场签约";
-        },
-        handleEdit(record) {
-            console.log(record);
-            this.$refs.modal.edit(record);
         },
         onSelectChange(selectedRowKeys, selectedRows) {
             this.selectedRowKeys = selectedRowKeys;

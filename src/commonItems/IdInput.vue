@@ -1,50 +1,49 @@
 <template>
-  <a-input
-    :value="value"
-    @change="onChange"
-    :placeholder="placeholder"
-    :maxLength="25"
-  />
+    <a-input :value="value" @change="onChange" :placeholder="placeholder" :maxLength="25" :size="size" />
 </template>
 <script>
 function formatNumber(value) {
-  value += "";
-  const list = value.split(".");
-  const prefix = list[0].charAt(0) === "-" ? "-" : "";
-  let num = prefix ? list[0].slice(1) : list[0];
-  let result = "";
-  while (num.length > 3) {
-    result = `,${num.slice(-3)}${result}`;
-    num = num.slice(0, num.length - 3);
-  }
-  if (num) {
-    result = num + result;
-  }
-  return `${prefix}${result}${list[1] ? `.${list[1]}` : ""}`;
+    value += "";
+    const list = value.split(".");
+    const prefix = list[0].charAt(0) === "-" ? "-" : "";
+    let num = prefix ? list[0].slice(1) : list[0];
+    let result = "";
+    while (num.length > 3) {
+        result = `,${num.slice(-3)}${result}`;
+        num = num.slice(0, num.length - 3);
+    }
+    if (num) {
+        result = num + result;
+    }
+    return `${prefix}${result}${list[1] ? `.${list[1]}` : ""}`;
 }
 
 export default {
-    name:'IdInput',
-  props: {
-    placeholder: {
-      type: String,
-      default: ""
+    name: "IdInput",
+    props: {
+        placeholder: {
+            type: String,
+            default: ""
+        },
+        value: [String, Number],
+        size: {
+            type: String,
+            default: "default"
+        }
     },
-    value: [String, Number]
-  },
-  model: {
-    prop: "value",
-    event: "change"
-  },
-  methods: {
-    formatNumber,
-    onChange(e) {
-      const { value } = e.target;
-      const reg = /^[0-9]*$/;
-      if ((!isNaN(value) && reg.test(value)) || value === "") {
-        this.$emit("change", value);
-      }
+    model: {
+        prop: "value",
+        event: "change"
+    },
+    methods: {
+        formatNumber,
+        onChange(e) {
+            const { value } = e.target;
+            const reg = /^[0-9]*$/;
+            if ((!isNaN(value) && reg.test(value)) || value === "") {
+                this.$emit("change", value);
+            }
+        }
     }
-  }
 };
 </script>

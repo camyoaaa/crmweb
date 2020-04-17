@@ -83,23 +83,20 @@
 </template>
 
 <script>
-import { getOne, modify } from "@/myapi/custom.js";
+import { getList, modify } from "@/myapi/custom.js";
 import { mapState } from "vuex";
 export default {
     name: "customDetail",
     data() {
         return {
-            custom: {
-                followList: []
-            }
+            custom: {}
         };
     },
     computed: {
         ...mapState({
             userAvatar: state => state.user.avatar,
             userAccount: state => state.user.account,
-            userName: state => state.user.name,
-            departmentpostZn: state => state.user.departmentpostZn
+            userName: state => state.user.name
         }),
         cid() {
             return this.$route.query.cid;
@@ -112,8 +109,8 @@ export default {
         async getCustomInfo() {
             if (!this.cid) return;
             try {
-                let result = await getOne(this.cid);
-                this.custom = result.data || {};
+                let result = await getList({ cid: this.cid });
+                this.custom = result.result.data[0];
             } catch (error) {}
         },
         async handleSubmit() {

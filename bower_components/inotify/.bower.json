@@ -1,0 +1,15 @@
+{
+  "name": "inotify",
+  "homepage": "https://github.com/jaywcjlove/iNotify",
+  "version": "2.0.10",
+  "_release": "2.0.10",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.10",
+    "commit": "df7e875380c984bd04cff71b1ab46d5268c0523e"
+  },
+  "_source": "https://github.com/jaywcjlove/iNotify.git",
+  "_target": "^2.0.10",
+  "_originalSource": "inotify",
+  "_direct": true
+}

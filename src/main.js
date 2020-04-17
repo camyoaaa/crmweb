@@ -19,15 +19,16 @@ Vue.config.productionTip = false;
 
 Vue.use(Antv);
 
-Vue.filter('numformat', function (num) {
+
+Vue.prototype.$numformat = function (num) {
   var res = num.toString().replace(/\d+/, function (n) { // 先提取整数部分
     return n.replace(/(\d)(?=(\d{3})+$)/g, function ($1) {
       return $1 + ",";
     });
   })
   return res;
-});
-
+}
+Vue.filter('numformat', Vue.prototype.$numformat);
 Vue.use(VueStorage, {
   namespace: "pro__", // key prefix
   name: "ls", // name variable Vue.[ls] or this.[$ls],

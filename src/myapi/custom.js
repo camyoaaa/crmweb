@@ -11,8 +11,9 @@ import kaxios from '@/http'
  * @param parameter
  * @returns {*}
  */
-export function getList(parameter) {
 
+//获取客户列表
+export function getList(parameter) {
   return kaxios({
     url: '/custom/list',
     method: 'get',
@@ -20,66 +21,20 @@ export function getList(parameter) {
   })
 }
 
-
-//分配销售
-export function sellerAlloc({
+//分配客户
+export function alloc({
   cid,
   seller,
   sellerManager
 }) {
   return kaxios({
-    url: '/custom/sellerAlloc',
+    url: '/custom/alloc',
     method: 'post',
     data: {
       cid,
       seller,
       sellerManager
     }
-  })
-}
-
-//获取已经录入的客户   ---- 接待人员
-export function getReceptList(parameter) {
-  return kaxios({
-    url: '/custom/receptList',
-    method: 'get',
-    params: parameter
-  })
-}
-
-//获取已经分配和未分配的客户     ---- 售前经理
-export function getSellerAllocList(parameter) {
-  return kaxios({
-    url: '/custom/sellerAllocList',
-    method: 'get',
-    params: parameter
-  })
-}
-
-//获取售前经理已分配的销售客户    -----售前人员/销售
-export function getSellerCustomList(parameter) {
-  return kaxios({
-    url: '/custom/sellerCustomList',
-    method: 'get',
-    params: parameter
-  })
-}
-
-//获取已经下单的客户   ----- 售后经理
-export function getOrderedCustomList(parameter) {
-  return kaxios({
-    url: '/custom/orderedCustomlist',
-    method: 'get',
-    params: parameter
-  })
-}
-
-//获取已经下单的客户
-export function getAftersaleList(parameter) {
-  return kaxios({
-    url: '/custom/aftersalelist',
-    method: 'get',
-    params: parameter
   })
 }
 

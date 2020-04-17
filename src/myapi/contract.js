@@ -48,11 +48,14 @@ export function deleteMeal(parameter) {
 }
 
 
-export function uploadShot(ctid, file) {
+export function uploadshot({
+  ctid,
+  shot
+}) {
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", shot);
   formData.append('ctid', ctid);
-  return kaxios.post("/contract/contractshot", formData, {
+  return kaxios.post("/contract/shot", formData, {
     contentType: false,
     processData: false,
     headers: {

@@ -40,7 +40,9 @@
         <a-card title="客户信息" style="margin-top:20px">
             <a-descriptions :column="4">
                 <a-descriptions-item label="客户名称">{{orderDetail.customInfo.name}}</a-descriptions-item>
-                <a-descriptions-item label="客户编号">{{orderDetail.customInfo.cid}}</a-descriptions-item>
+                <a-descriptions-item label="客户编号">
+                    <router-link :to="{path:'/customDetail',query:{cid:orderDetail.customInfo.cid}}">{{orderDetail.customInfo.cid}}</router-link>
+                </a-descriptions-item>
                 <a-descriptions-item label="客户来源">{{orderDetail.customInfo.from}}</a-descriptions-item>
                 <a-descriptions-item label="身份证号">{{orderDetail.customInfo.idcard}}</a-descriptions-item>
                 <a-descriptions-item label="客户手机">{{orderDetail.customInfo.phone}}</a-descriptions-item>

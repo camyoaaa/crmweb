@@ -110,6 +110,7 @@ export default {
                     const img = window.URL.createObjectURL(data);
                     this.model = true;
                     this.modelSrc = img;
+                    formData.append("fields", "avatar");
                     formData.append("file", data, this.fileName);
                     this.$kaxios
                         .post("/auth/avatar", formData, {

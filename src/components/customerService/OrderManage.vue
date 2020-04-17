@@ -205,13 +205,19 @@
 <script>
 import {
     getList,
-    addReceipt,
-    uploadReceiptShot,
-    addContract,
-    uploadContractShot,
     deleteOrder,
     upgradeOrder
 } from "@/myapi/order.js";
+
+import {
+    add as addReceipt,
+    uploadshot as uploadReceiptShot
+} from "@/myapi/payreceipt.js";
+
+import {
+    add as addContract,
+    uploadshot as uploadContractShot
+} from "@/myapi/contract.js";
 import { mapState } from "vuex";
 export default {
     data() {

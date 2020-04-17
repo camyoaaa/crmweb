@@ -33,31 +33,7 @@ export default {
       console.log("disconnect", error);
     });
     salesManager.on("test", function(data) {
-      console.log("salesManager test", data);
       this.isSupportNotify();
-      // let notify = new Notification("新消息来啦！", {
-      //     body: data,
-      //     lang: "zh-CN"
-      // });
-
-      // console.log("notify", notify);
-      // notify.onshow = function() {
-      //     console.log("通知显示!");
-      // };
-      // notify.onclick = function() {
-      //     console.log("windows弹窗点击通知");
-      //     window.focus();
-      //     window.location.href = "https://www.baidu.com/";
-      //     notify.close();
-      // };
-      // notify.onerror = function() {
-      //     console.log("通知错误!");
-      //     // 手动关闭
-      //     notify.close();
-      // };
-      // notify.onclose = function() {
-      //     console.log("通知关闭");
-      // };
     });
   },
   destroyed() {
