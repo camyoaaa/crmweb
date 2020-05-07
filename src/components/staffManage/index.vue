@@ -29,7 +29,7 @@
 
         <div class="table-operator" style="margin-bottom:18px">
             <a-button type="primary" @click="queryTable" icon="search">查询</a-button>
-            <a-button type="primary" icon="redo" @click="resetTable">重置</a-button>
+            <a-button type="primary" icon="redo" @click="resetQueryparam">重置</a-button>
             <a-button :disabled="!$auth('staffManage.add')" type="primary" icon="plus" @click="$refs.createModal.add()">新增员工</a-button>
             <a-dropdown :disabled="!$auth('staffManage.modify')" v-if="selectedRowKeys.length > 0">
                 <a-menu slot="overlay">
