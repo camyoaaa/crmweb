@@ -26,8 +26,7 @@ export default {
             role: state => state.user.role,
             roleList: state => state.appconfig.appRoleList,
             department: state => state.user.department,
-            post: state => state.user.post,
-            isadmin: state => state.user.isadmin
+            post: state => state.user.post
         }),
         ...mapGetters(["addRoutes"]),
         MenuList() {
