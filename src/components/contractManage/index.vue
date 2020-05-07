@@ -123,7 +123,7 @@
                     </div>
                     <div v-else>
                         <a-button v-if="record.status === 0" type="primary" size="small" @click="startReview(record)" :disabled="!$auth('contractManage.review') || Object.keys(editingCache).length > 0">审核</a-button>
-                        <a-button v-else size="small" @click="editContract(record)" :disabled="!$auth('contractManage.modify') || Object.keys(editingCache).length > 0 || record.status === reviewStatusList.find(r=r.name=='审核通过').id">更正</a-button>
+                        <a-button v-else size="small" @click="editContract(record)" :disabled="!$auth('contractManage.modify') || Object.keys(editingCache).length > 0 || record.status === reviewStatusList.find(r=>r.name=='审核通过').id">更正</a-button>
                     </div>
 
                 </span>
