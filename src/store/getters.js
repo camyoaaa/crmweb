@@ -11,7 +11,9 @@ const getters = {
   addRoutes: state => state.asyncRoute.addRouters,
   multiTab: state => state.app.multiTab,
   lang: state => state.i18n.lang,
-  account: state => state.user.account
+  account: state => state.user.account,
+  gotAppconfig1: state => state.appconfig.gotAppconfig1,
+  socketUuid: state => state.socketUuid.uuid
 };
 
 export default getters;

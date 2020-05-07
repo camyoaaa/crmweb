@@ -64,6 +64,14 @@ export function upgradeOrder(order) {
   })
 }
 
+export function updateOrder(parameter) {
+  return kaxios({
+    url: '/order/update',
+    method: 'put',
+    data: parameter
+  })
+}
+
 export function addContract(parameter) { //新增合同
   return kaxios({
     url: '/order/addContract',

@@ -25,6 +25,8 @@ import WorkIn from '@/commonItems/WorkIn'
 import Ellipsis from '@/commonItems/Ellipsis'
 import ImagePreview from '@/commonItems/ImagePreview.vue'
 import HeadInfo from '@/commonItems/HeadInfo.vue'
+import RoleSelect from '@/commonItems/RoleSelect.vue'
+import CustomStatusBadge from '@/commonItems/CustomStatusBadge.vue'
 
 
 Vue.component('chart', ECharts)
@@ -55,3 +57,7 @@ Vue.component(WorkIn.name, WorkIn);
 Vue.component(Ellipsis.name, Ellipsis);
 Vue.component(ImagePreview.name, ImagePreview);
 Vue.component(HeadInfo.name, HeadInfo);
+Vue.component(RoleSelect.name, RoleSelect);
+Vue.component(CustomStatusBadge.name, CustomStatusBadge);
+
+import './directives/action'

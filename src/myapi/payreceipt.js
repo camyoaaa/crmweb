@@ -13,19 +13,50 @@ import kaxios from '@/http'
  */
 
 export function add(parameter) {
+  const {
+    shot,
+    ...payload
+  } = parameter;
+  const formData = new FormData();
+  formData.append("file", shot);
+  for (const key in payload) {
+    formData.append(key, payload[key]);
+  }
+  return kaxios.post("/payreceipt/add", formData, {
+    contentType: false,
+    processData: false,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  })
+}
+
+export function updateReceipt(parameter) {
   return kaxios({
-    url: '/payreceipt/add',
-    method: 'post',
+    url: '/payreceipt/update',
+    method: 'put',
     data: parameter
   })
 }
+
+export function reviewReceipt(parameter) {
+  return kaxios({
+    url: '/payreceipt/review',
+    method: 'put',
+    data: parameter
+  })
+}
+
+
 export function uploadshot({
-  receiptid,
+  payreceiptid,
   shot
-}) { //上传收据截图
+}) {
+  console.log(payreceiptid);
+  //上传收据截图
   const formData = new FormData();
   formData.append("file", shot);
-  formData.append('receiptid', receiptid);
+  formData.append('payreceiptid', payreceiptid);
   return kaxios.post("/payreceipt/shot", formData, {
     contentType: false,
     processData: false,
@@ -34,6 +65,8 @@ export function uploadshot({
     }
   })
 }
+
+
 
 export function getList(parameter) {
 

@@ -47,7 +47,7 @@ h1 {
   cursor: pointer;
   line-height: 55px;
   list-style-type: none;
-  width: 200px;
+  width: 400px;
   text-align: center;
   font-size: 20px;
   background: rgba(0, 0, 0, 0.58);
@@ -96,14 +96,12 @@ input.denglu_btn {
   width: 100%;
   text-align: center;
   color: #fff;
-  background: -webkit-gradient(
-    linear,
-    left top,
-    left bottom,
-    from(#ffa93e),
-    color-stop(0.5, #ff7708),
-    to(#ff7708)
-  );
+  background: -webkit-gradient(linear,
+      left top,
+      left bottom,
+      from(#ffa93e),
+      color-stop(0.5, #ff7708),
+      to(#ff7708));
   border: 0;
   font-size: 16px;
 }

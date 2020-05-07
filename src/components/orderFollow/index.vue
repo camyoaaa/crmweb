@@ -4,31 +4,29 @@
             <a-col :span="13">
                 <a-card>
                     <div slot="title">
-                        <router-link :to="{ path: '/customerAftersales' }">
-                            <a-button type="link" icon="arrow-left"></a-button>
-                        </router-link>
-                        {{`${form.orderInfo.customInfo.name}-${form.orderInfo.mealInfo.name} - 售后详情`}}
+                        <a-button type="link" icon="arrow-left" @click="$router.go(-1)"></a-button>
+                        {{`${form.customInfo.name}-${form.mealInfo.name} - 售后详情`}}
                     </div>
                     <!-- {{ form }} -->
                     <a-descriptions title="订单信息">
                         <a-descriptions-item label="订单编号">
-                            <router-link :to="{path:'/orderDetail',query:{oid:form.orderInfo.oid}}">{{form.orderInfo.oid}}</router-link>
+                            <router-link :to="{path:'/orderDetail',query:{oid:form.oid}}">{{form.oid}}</router-link>
                         </a-descriptions-item>
-                        <a-descriptions-item label="订购套餐">{{form.orderInfo.mealInfo.name}}</a-descriptions-item>
-                        <a-descriptions-item label="订单金额">{{form.orderInfo.amount}}</a-descriptions-item>
-                        <a-descriptions-item label="已收金额">{{form.orderInfo.payreceiptList.reduce((p1,p2)=>p1.money||0 + p2.money||0,0)}}</a-descriptions-item>
-                        <a-descriptions-item label="订单备注">{{form.orderInfo.remark}}</a-descriptions-item>
-                        <a-descriptions-item label="创建时间">{{form.orderInfo.createTime | dateformat}}</a-descriptions-item>
+                        <a-descriptions-item label="订购套餐">{{form.mealInfo.name}}</a-descriptions-item>
+                        <a-descriptions-item label="订单金额">{{form.money | numformat}}</a-descriptions-item>
+                        <a-descriptions-item label="已收金额">{{form.payreceiptList.reduce((p1money,p2)=>p1money + p2.money||0,0) | numformat}}</a-descriptions-item>
+                        <a-descriptions-item label="订单备注">{{form.remark || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="创建时间">{{form.createTime | dateformat}}</a-descriptions-item>
                     </a-descriptions>
                     <a-descriptions title="客户信息">
                         <a-descriptions-item label="客户编号">
-                            <router-link :to="{path:'/customDetail',query:{cid:form.orderInfo.customInfo.cid}}">{{form.orderInfo.customInfo.cid}}</router-link>
+                            <router-link :to="{path:'/customDetail',query:{cid:form.customInfo.cid}}">{{form.customInfo.cid}}</router-link>
                         </a-descriptions-item>
-                        <a-descriptions-item label="客户名称">{{form.orderInfo.customInfo.name}}</a-descriptions-item>
-                        <a-descriptions-item label="客户手机">{{form.orderInfo.customInfo.phone}}</a-descriptions-item>
-                        <a-descriptions-item label="客户微信">{{form.orderInfo.customInfo.wx}}</a-descriptions-item>
+                        <a-descriptions-item label="客户名称">{{form.customInfo.name}}</a-descriptions-item>
+                        <a-descriptions-item label="客户手机">{{form.customInfo.phone}}</a-descriptions-item>
+                        <a-descriptions-item label="客户微信">{{form.customInfo.wx}}</a-descriptions-item>
                         <a-descriptions-item label="客户Q Q">
-                            {{form.orderInfo.customInfo.qq}}
+                            {{form.customInfo.qq}}
                         </a-descriptions-item>
                     </a-descriptions>
                     <a-divider></a-divider>
@@ -42,14 +40,9 @@
                             <a-col :span="8">
                                 <a-form-model-item label="是否营业">
                                     <a-select v-model="form.isOpen">
-                                        <a-select-option :value="1">
-                                            未知
-                                        </a-select-option>
-                                        <a-select-option :value="2">
-                                            营业中
-                                        </a-select-option>
-                                        <a-select-option :value="3">
-                                            未营业
+
+                                        <a-select-option v-for="ts in shopStatusList" :key="ts.id" :value="ts.id">
+                                            {{ts.name}}
                                         </a-select-option>
                                     </a-select>
                                 </a-form-model-item>
@@ -72,38 +65,35 @@
                             <a-col :span="8">
                                 <a-form-model-item label="教学阶段">
                                     <a-select v-model="form.teachStep">
-                                        <a-select-option :value="1">
-                                            未开始
-                                        </a-select-option>
-                                        <a-select-option :value="2">
-                                            初级阶段
-                                        </a-select-option>
-                                        <a-select-option :value="3">
-                                            中级阶段
-                                        </a-select-option>
-                                        <a-select-option :value="4">
-                                            高级阶段
+                                        <a-select-option v-for="ts in teachStatusList" :key="ts.id" :value="ts.id">
+                                            {{ts.name}}
                                         </a-select-option>
                                     </a-select>
                                 </a-form-model-item>
                             </a-col>
                             <a-col :span="8">
-                                <a-form-model-item label="活动次数">
+                                <a-form-model-item>
+                                    <span slot="label">
+                                        总活动次数
+                                        <a-tooltip title="结合套餐活动次数及订单备注中赠送的活动次数" placement="right">
+                                            <a-icon type="info-circle"></a-icon>
+                                        </a-tooltip>
+                                    </span>
+                                    <a-input-number v-model="form.totalActivity" style="width:100%" />
+                                </a-form-model-item>
+                            </a-col>
+                            <a-col :span="8">
+                                <a-form-model-item label="当前活动次数">
                                     <a-input-number v-model="form.activityStep" style="width:100%" />
                                 </a-form-model-item>
                             </a-col>
                             <a-col :span="8">
                                 <a-form-model-item label="活动状态">
                                     <a-select v-model="form.activityStatus">
-                                        <a-select-option :value="1">
-                                            未开始
+                                        <a-select-option v-for="ts in activeStatusList" :key="ts.id" :value="ts.id">
+                                            <a-badge :status="ts.status" :text="ts.name"></a-badge>
                                         </a-select-option>
-                                        <a-select-option :value="2">
-                                            审核中
-                                        </a-select-option>
-                                        <a-select-option :value="3">
-                                            已完成
-                                        </a-select-option>
+
                                     </a-select>
                                 </a-form-model-item>
                             </a-col>
@@ -131,29 +121,36 @@ export default {
     data() {
         return {
             form: {
-                orderInfo: {
-                    customInfo: {},
-                    mealInfo: {},
-                    contractList: [],
-                    payreceiptList: []
-                }
+                customInfo: {},
+                mealInfo: {},
+                contractList: [],
+                payreceiptList: []
             },
             followRecord: ""
         };
     },
     computed: {
         ...mapState({
-            userAvatar: state => state.user.avatar,
-            userAccount: state => state.user.account,
-            userName: state => state.user.name,
-            departmentpostZn: state => state.user.departmentpostZn
+            teachStatusList: state => state.appconfig.teachStatusList,
+            shopStatusList: state => state.appconfig.shopStatusList,
+            activeStatusList: state => state.appconfig.activeStatusList,
+            role: state => state.user.role,
+            roleList: state => state.appconfig.appRoleList
         }),
         oid() {
             return Number(this.$route.query.oid);
         }
     },
     created() {
-        this.getAftersaleInfo();
+        if (
+            ["管理员", "售后员", "售后经理"].includes(
+                this.roleList.find(r => r.id === this.role).name
+            )
+        ) {
+            this.getAftersaleInfo();
+        } else {
+            this.$router.push({ path: "/403" });
+        }
     },
     methods: {
         async getAftersaleInfo() {
@@ -168,6 +165,9 @@ export default {
         },
         async submitAftersales() {
             try {
+                if (this.form.isEnd === 1) {
+                    this.form.endTime = Date.now();
+                }
                 let result = await modify(this.form);
                 if (result.status == 200) {
                     this.getAftersaleInfo();

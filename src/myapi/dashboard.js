@@ -33,56 +33,83 @@ export function getOrganization(account) {
   })
 }
 
+//获取销售经理的待办信息
+export function getSellerManageTodo(parameter) {
+  return kaxios({
+    url: '/dashboard/sellerManageTodo',
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getAchievementData(parameter) {
+  return kaxios({
+    url: '/dashboard/achievementData',
+    method: 'get',
+    params: parameter
+  })
+}
+
+
 //获取接待客户数据   --- 接待员
-export function getReceiptCustoms(account) {
+export function getReceiptCustoms(parameter) {
   return kaxios({
     url: '/dashboard/receiptCustoms',
     method: 'get',
-    params: {
-      account
-    }
+    params: parameter
   })
 }
 
 //获取接待客户来源数据   --- 接待员
-export function getCustomFrom(account, startTime) {
+export function getCustomFrom(parameter) {
   return kaxios({
     url: '/dashboard/customfrom',
     method: 'get',
-    params: {
-      account,
-      startTime
-    }
+    params: parameter
   })
 }
 
 //获取接待客户各时间段数据   --- 接待员
-export function getCustomTime(account, startTime) {
+export function getCustomTime(parameter) {
   return kaxios({
     url: '/dashboard/customtime',
     method: 'get',
-    params: {
-      account,
-      startTime
-    }
+    params: parameter
   })
 }
 
-//获取客户经理的待办数据
+//获取销售经理的待办数据
 export function getSellerManagerTodo() {
   return kaxios({
     url: '/dashboard/sellerManagerTodo',
     method: 'get'
   })
 }
-//获取客户经理的待办数据
-export function getSellerTodo(account) {
+//获取销售员的待办数据
+export function getSellerTodo(parameter) {
   return kaxios({
     url: '/dashboard/sellerTodo',
     method: 'get',
-    params: {
-      account
-    }
+    params: parameter
+  })
+}
+
+
+//获取售后经理的待办数据
+export function getAftersaleManagerTodo(parameter) {
+  return kaxios({
+    url: '/dashboard/aftersaleManagerTodo',
+    method: 'get',
+    params: parameter
+  })
+}
+
+//获取售后经理的待办数据
+export function getAftersaleTodo(parameter) {
+  return kaxios({
+    url: '/dashboard/aftersaleTodo',
+    method: 'get',
+    params: parameter
   })
 }
 
@@ -99,6 +126,14 @@ export function getDealData(parameter) {
 export function getAchievementOverview(parameter) {
   return kaxios({
     url: '/dashboard/achievementOverview',
+    method: 'get',
+    params: parameter
+  })
+}
+
+export function getCustomData(parameter) {
+  return kaxios({
+    url: '/dashboard/customData',
     method: 'get',
     params: parameter
   })

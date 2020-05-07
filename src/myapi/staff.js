@@ -32,9 +32,11 @@ export function add(parameter) {
   });
 }
 
-export function updateOne(parameter) {
+
+
+export function updateStaff(parameter) {
   return kaxios({
-    url: "/staff/updateOne",
+    url: "/staff/update",
     method: "put",
     data: parameter
   });

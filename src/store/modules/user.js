@@ -12,6 +12,7 @@ import {
 
 class USERSTATE {
   constructor() {
+    this.userid = "";
     this.account = ""; //员工编号
     this.name = ""; //员工名称
     this.token = ""; //token
@@ -24,11 +25,7 @@ class USERSTATE {
     this.password = ""; //password
     this.phone = ""; //手机
     this.post = ""; //微信
-    this.role = "";
-    this.isadmin = ""; //是否管理员
-    this.department = ""; //部门
-    this.departmentpostZn = ""; //部门职位中文
-    this.post = ""; //职位
+    this.role = ""; //角色
     this.status = ""; //状态
     this.lastLoginTime = ""; //上次登陆时间
     this.lastLoginIP = ""; //上次登录ip
@@ -51,6 +48,7 @@ const user = {
   actions: {
     // 登录
     Login({
+
       commit
     }, userInfo) {
       return new Promise((resolve, reject) => {
@@ -66,12 +64,14 @@ const user = {
     },
     //获取用户信息
     GetInfo({
+      state,
       commit
     }) {
       return new Promise((resolve, reject) => {
         getInfo()
           .then(response => {
             commit("SET_USERSTATE", response.user);
+            console.log('state', state);
             resolve(response.user);
           })
           .catch(error => {
@@ -87,6 +87,7 @@ const user = {
       return new Promise(resolve => {
         logout(state.account)
           .then(() => {
+            window.location.reload();
             resolve();
           })
           .catch(() => {

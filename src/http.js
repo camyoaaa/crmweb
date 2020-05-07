@@ -55,12 +55,15 @@ kaxios.interceptors.request.use(config => {
   if (token) {
     config.headers["Authorization"] = token; // 让每个请求携带自定义 token 请根据实际情况自行修改
   }
+  console.log('store.getters.socketUuid', store.getters.socketUuid);
+  config.headers['socketuuid'] = store.getters.socketUuid
   return config;
 }, err);
 
 // response interceptor
 kaxios.interceptors.response.use(response => {
   const token = response.headers["authorization"];
+  console.log('token', token);
   if (token) {
     store.commit("SET_TOKEN", token);
     Vue.ls.set(ACCESS_TOKEN, token, (response.data.user.rememberMe ? 7 : 1) * 24 * 60 * 60 * 1000); //7天免登录

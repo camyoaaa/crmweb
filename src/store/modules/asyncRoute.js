@@ -35,7 +35,6 @@ const RouterStore = {
             hidden: true
           }
         ];
-        // let pages = asyncRouters[0].children.find(m => m.path == '/systemSettings')
         console.log('asyncRouters********************', asyncRouters);
 
 

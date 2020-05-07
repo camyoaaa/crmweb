@@ -8,7 +8,7 @@
             </div>
             <main-menu></main-menu>
         </a-layout-sider>
-        <a-layout>
+        <a-layout style="display:flex;min-height:100vh;flex-direction: column;">
             <a-layout-header style="background: #fff; padding: 0;box-shadow: 0 1px 4px rgba(0,21,41,.08);">
                 <a-icon class="trigger" :type="collapsed ? 'menu-unfold' : 'menu-fold'" @click="() => (collapsed = !collapsed)" />
                 <div class="header" style="float:right;">
@@ -16,10 +16,10 @@
                 </div>
             </a-layout-header>
             <a-layout-content :style="{
+                flex:1,
           margin: '24px 16px',
-          minHeight: '280px'
         }">
-                <router-view></router-view>
+                <router-view :key="$route.fullPath"></router-view>
             </a-layout-content>
         </a-layout>
     </a-layout>
@@ -27,13 +27,27 @@
 <script>
 import MainHeader from "./MainHeader";
 import MainMenu from "./MainMenu";
-
+import { getAppConfig } from "@/myapi/system.js";
 export default {
     components: { MainHeader, MainMenu },
     data() {
         return {
             collapsed: false
         };
+    },
+    created() {
+        this.getAppConfig();
+    },
+    methods: {
+        async getAppConfig() {
+            try {
+                let result = await getAppConfig();
+                if (result.status == 200) {
+                    this.$store.commit("SET_CONFSTATE", result.data);
+                    console.log(result);
+                }
+            } catch (error) {}
+        }
     }
 };
 </script>

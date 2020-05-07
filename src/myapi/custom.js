@@ -58,6 +58,7 @@ export function getCustomDetail(cid) {
   })
 }
 
+//新增客户
 export function add(parameter) {
   return kaxios({
     url: '/custom/add',
@@ -66,7 +67,8 @@ export function add(parameter) {
   })
 }
 
-export function modify(parameter) {
+//更新客户
+export function updateCustom(parameter) {
   return kaxios({
     url: '/custom/update',
     method: 'put',
@@ -77,7 +79,6 @@ export function modify(parameter) {
 //删除一个或者多个
 export function deleteCustom(cids) {
   return kaxios({
-    // url: api.SendSms,
     url: '/custom/delete',
     method: 'delete',
     data: {

@@ -33,8 +33,8 @@ import { mapState } from "vuex";
 export default {
     name: "FollowRecord",
     props: {
-        cid: Number,
-        oid: Number,
+        cid: [Number, String],
+        oid: [Number, String],
         placeholder: {
             type: String,
             default: `请按 更新"信息字段":"原值"=>"新值" 的格式填写跟进记录,例如:更新 客户状态:新客户=>微信通过;更新手机:18428369147=>18428369146`

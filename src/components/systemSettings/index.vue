@@ -1,119 +1,91 @@
 <template>
-  <div class="page-header-index-wide" style="min-height:500px">
-    <a-card
-      :bordered="false"
-      :bodyStyle="{ padding: '16px 0', height: '100%' }"
-      :style="{ height: '100%', minHeight: '500px' }"
-    >
-      <div class="account-settings-info-main desktop">
-        <div class="account-settings-info-left">
-          <a-menu
-            mode="inline"
-            type="inner"
-            :selectedKeys="selectedKeys"
-            @openChange="onOpenChange"
-          >
-            <a-menu-item v-for="(m, index) in asyncMenuList" :key="m.path">
-              <router-link :to="{ path: m.path.trim() }">
-                <a-icon :type="m.icon"></a-icon> {{ m.name }}
-              </router-link>
-            </a-menu-item>
-          </a-menu>
-        </div>
-        <div class="account-settings-info-right">
-          <div class="account-settings-info-title">
-            <span>{{ $route.meta.title }}</span>
-          </div>
-          <router-view></router-view>
-        </div>
-      </div>
-    </a-card>
-  </div>
+    <div style="margin:-22px -16px 0px -15px;background:white;padding:16px 16px 0px 16px">
+        <a-tabs>
+            <a-tab-pane key="1" tab="菜单权限">
+                <!-- <permission-manage /> -->
+                <permissionManage />
+            </a-tab-pane>
+            <a-tab-pane key="2" tab="客户来源">
+                <customFromManage />
+            </a-tab-pane>
+            <a-tab-pane key="3" tab="支付设置">
+                <paywayManage />
+            </a-tab-pane>
+        </a-tabs>
+    </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapState, mapGetters } from "vuex";
+import permissionManage from "./permissionManage/index.vue";
+import customFromManage from "./customfrom/index.vue";
+import paywayManage from "./paySetting/index.vue";
 export default {
-  name: "config",
-  data() {
-    return {
-      selectedKeys: []
-    };
-  },
-  created() {
-    this.updateMenu();
-  },
-  watch: {
-    $route(val) {
-      this.updateMenu();
-    }
-  },
-  computed: {
-    ...mapGetters(["addRoutes"]),
-    asyncMenuList() {
-      console.log("this.addRoutes", this.addRoutes);
-      if (this.addRoutes.length > 0) {
-        let parent = this.addRoutes[0].children.find(
-          m => m.path == this.$route.matched[1].path
-        );
-        return parent ? parent.children : [];
-      } else {
-        return [];
-      }
-    }
-  },
-  methods: {
-    updateMenu() {
-      const routes = this.$route.matched.concat();
-      console.log("this.$route.matched", this.$route.matched);
-      this.selectedKeys = [routes.pop().path];
+    name: "config",
+    components: { permissionManage, customFromManage, paywayManage },
+    computed: {
+        ...mapState({
+            appRoleList: state => state.appconfig.appRoleList,
+            role: state => state.user.role
+        })
     },
-    onOpenChange() {}
-  }
+    data() {
+        return {
+            selectedKeys: []
+        };
+    },
+    created() {
+        if (this.appRoleList.find(r => r.id === this.role).name !== "管理员") {
+            this.$router.push({ path: "/403" });
+        }
+    },
+    watch: {},
+    computed: {},
+    methods: {}
 };
 </script>
 <style lang="less" scoped>
 .account-settings-info-main {
-  width: 100%;
-  display: flex;
-  height: 100%;
-  overflow: auto;
+    width: 100%;
+    display: flex;
+    height: 100%;
+    overflow: auto;
 
-  &.mobile {
-    display: block;
+    &.mobile {
+        display: block;
+
+        .account-settings-info-left {
+            // border-right: unset;
+            border-bottom: 1px solid #e8e8e8;
+            width: 100%;
+            height: 50px;
+            overflow-x: auto;
+            overflow-y: scroll;
+        }
+        .account-settings-info-right {
+            padding: 20px 40px;
+        }
+    }
 
     .account-settings-info-left {
-      // border-right: unset;
-      border-bottom: 1px solid #e8e8e8;
-      width: 100%;
-      height: 50px;
-      overflow-x: auto;
-      overflow-y: scroll;
+        // border-right: 1px solid #e8e8e8;
+        width: 224px;
     }
+
     .account-settings-info-right {
-      padding: 20px 40px;
-    }
-  }
+        flex: 1 1;
+        padding: 8px 40px;
 
-  .account-settings-info-left {
-    // border-right: 1px solid #e8e8e8;
-    width: 224px;
-  }
-
-  .account-settings-info-right {
-    flex: 1 1;
-    padding: 8px 40px;
-
-    .account-settings-info-title {
-      color: rgba(0, 0, 0, 0.85);
-      font-size: 20px;
-      font-weight: 500;
-      line-height: 28px;
-      margin-bottom: 12px;
+        .account-settings-info-title {
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 28px;
+            margin-bottom: 12px;
+        }
+        .account-settings-info-view {
+            padding-top: 12px;
+        }
     }
-    .account-settings-info-view {
-      padding-top: 12px;
-    }
-  }
 }
 </style>

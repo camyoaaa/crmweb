@@ -34,6 +34,9 @@ export default {
             previewVisible: false
         };
     },
+    beforeDestroy() {
+        this.fileList = [];
+    },
     methods: {
         onchange({ fileList }) {
             this.fileList = fileList.filter(file => {

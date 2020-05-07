@@ -11,6 +11,7 @@ import kaxios from '@/http'
  * @param parameter
  * @returns {*}
  */
+//合同列表
 export function getList(parameter) {
 
   return kaxios({
@@ -19,16 +20,28 @@ export function getList(parameter) {
     params: parameter
   })
 }
-
+//添加合同
 export function add(parameter) {
-  return kaxios({
-    url: '/contract/add',
-    method: 'post',
-    data: parameter
+  const {
+    shot,
+    ...otherFields
+  } = parameter;
+  console.log(otherFields);
+  const formData = new FormData();
+  formData.append("file", shot);
+  for (const key in otherFields) {
+    formData.append(key, otherFields[key]);
+  }
+  return kaxios.post("/contract/add", formData, {
+    contentType: false,
+    processData: false,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
   })
 }
-
-export function modify(parameter) {
+//更新合同
+export function updateContract(parameter) {
   return kaxios({
     url: '/contract/update',
     method: 'put',
@@ -37,17 +50,16 @@ export function modify(parameter) {
 }
 
 
-
-export function deleteMeal(parameter) {
+//更新合同
+export function reviewContract(parameter) {
   return kaxios({
-    // url: api.SendSms,
-    url: '/meal/delete',
-    method: 'delete',
+    url: '/contract/review',
+    method: 'put',
     data: parameter
   })
 }
 
-
+//上传合同截图
 export function uploadshot({
   ctid,
   shot

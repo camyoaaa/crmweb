@@ -1,8 +1,7 @@
 <template>
-    <div :bordered="false">
+    <a-card :bordered="false">
         <div class="table-operator" style="margin-bottom:18px">
             <a-button type="primary" icon="plus" @click="$refs.createModal.add()">新增来源</a-button>
-            <a-button type="dashed" @click="tableOption">{{ (optionAlertShow && "关闭") || "开启" }} alert</a-button>
         </div>
         <s-table ref="table" size="default" rowKey="name" :columns="columns" :data="loadData" :alert="options.alert" :rowSelection="options.rowSelection" showPagination="auto" :pagination="pagination">
             <span slot="name" slot-scope="text, record">
@@ -35,19 +34,17 @@
             </span>
         </s-table>
         <create-form ref="createModal" @ok="handleOk" />
-    </div>
+    </a-card>
 </template>
 
 <script>
 import moment from "moment";
-import Ellipsis from "@/commonItems/Ellipsis";
 import CreateForm from "./CreateForm";
 import { getList, modify, add, deleteOrigin } from "@/myapi/customfrom.js";
 
 export default {
     name: "TableList",
     components: {
-        Ellipsis,
         CreateForm
     },
     data() {

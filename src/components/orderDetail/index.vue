@@ -2,7 +2,6 @@
     <a-spin :spinning="spinning" size="large">
         <a-page-header id="components-page-header-demo-responsive" :ghost="false" @back="() => $router.go(-1)" :title="`单号:${orderDetail.oid || ''}`" subTitle="" style="margin:-23px -16px;margin-bottom:0px">
             <template slot="extra">
-                <a-button key="3" icon="dropbox">催单</a-button>
                 <!-- <a-button key="2">Operation</a-button> -->
                 <a-button key="1" type="primary" icon="redo" @click="getOrderDetail">
                     刷新
@@ -22,7 +21,7 @@
                 </div>
                 <div class="extra">
                     <div style="display:flex;width:max-content;justify-content:flex-end">
-                        <a-statistic title="订单金额" :value="orderDetail.amount" prefix="￥" style="margin-right:40px" />
+                        <a-statistic title="订单金额" :value="orderDetail.money" prefix="￥" style="margin-right:40px" />
                         <a-statistic title="已收金额" prefix="￥" :value="orderDetail.payreceiptList.reduce((p1,p2)=>p1.money||0+p2.money||0,0)" />
                     </div>
                 </div>
@@ -30,10 +29,12 @@
 
         </a-page-header>
         <a-card title="订单进度" style="margin-top:20px">
-            <a-steps progressDot :current="1">
+            <a-steps progressDot :current="currentProcess(orderDetail)">
                 <a-step title="创建订单" :description="orderDetail.createTime | dateformat" />
-                <a-step title="订单审核" :description="getOrderStatus(orderDetail)" />
-                <a-step title="售后处理" :description="orderDetail.followrecords.length > 0?orderDetail.followrecords[0].comment:''" />
+                <a-step title="售后中">
+                    <div slot="description">活动进度: {{orderDetail.aftersales.activityStep}} / {{orderDetail.aftersales.totalActivity}}</div>
+                </a-step>
+                <!-- <a-step title="售后处理" :description="orderDetail.followrecords.length > 0?orderDetail.followrecords[0].comment:''" /> -->
                 <a-step title="完成" :description="orderDetail.aftersales.endTime | dateformat" />
             </a-steps>
         </a-card>
@@ -43,11 +44,10 @@
                 <a-descriptions-item label="客户编号">
                     <router-link :to="{path:'/customDetail',query:{cid:orderDetail.customInfo.cid}}">{{orderDetail.customInfo.cid}}</router-link>
                 </a-descriptions-item>
-                <a-descriptions-item label="客户来源">{{orderDetail.customInfo.from}}</a-descriptions-item>
+                <a-descriptions-item label="客户来源">{{orderDetail.customInfo.fromZn}}</a-descriptions-item>
                 <a-descriptions-item label="身份证号">{{orderDetail.customInfo.idcard}}</a-descriptions-item>
                 <a-descriptions-item label="客户手机">{{orderDetail.customInfo.phone}}</a-descriptions-item>
                 <a-descriptions-item label="客户微信">{{orderDetail.customInfo.wx}}</a-descriptions-item>
-                <a-descriptions-item label="客户Q Q">{{orderDetail.customInfo.qq}}</a-descriptions-item>
                 <a-descriptions-item label="客户Q Q">{{orderDetail.customInfo.qq}}</a-descriptions-item>
                 <a-descriptions-item label="省/直辖市/自治区">{{orderDetail.customInfo.province}}</a-descriptions-item>
                 <a-descriptions-item label="市/辖区">{{orderDetail.customInfo.city}}</a-descriptions-item>
@@ -63,7 +63,8 @@
                 <a-descriptions-item label="PC端店铺地址">{{orderDetail.aftersales.pcshopUrl}}</a-descriptions-item>
                 <a-descriptions-item label="手机端店铺地址">{{orderDetail.aftersales.mbshopUrl}}</a-descriptions-item>
                 <a-descriptions-item label="教学阶段">{{getTeachStep(orderDetail.aftersales.teachStep)}}</a-descriptions-item>
-                <a-descriptions-item label="活动次数">{{orderDetail.aftersales.activityStep}}</a-descriptions-item>
+                <a-descriptions-item label="总活动次数">{{orderDetail.aftersales.totalActivity}}</a-descriptions-item>
+                <a-descriptions-item label="当前活动次数">{{orderDetail.aftersales.activityStep}}</a-descriptions-item>
                 <a-descriptions-item label="活动状态">{{getStatus(orderDetail.aftersales.activityStatus)}}</a-descriptions-item>
             </a-descriptions>
         </a-card>
@@ -75,7 +76,7 @@
                         <a-list-item :key="index" v-for="(item, index) in orderDetail.payreceiptList">
                             <a-list-item-meta>
                                 <image-preview slot="avatar" :src="item.shot" class="shotimg" />
-                                <span slot="description">{{item.content}}</span>
+                                <ellipsis slot="description" :length="18" tooltip>{{item.content}}</ellipsis>
                                 <a-statistic slot="title" :precision="2" :valueStyle="{fontSize:'16px'}" :value="item.money" />
                             </a-list-item-meta>
                             <div class="list-content">
@@ -136,12 +137,16 @@
                     </a-list>
                 </a-card>
             </a-col>
+            <a-col :span="24" style="margin-top:20px">
+                <follow-record :oid="Number($route.query.oid)" :replyable="false"></follow-record>
+            </a-col>
         </a-row>
     </a-spin>
 </template>
 
 <script>
 import { getOrderDetail } from "@/myapi/order.js";
+import { mapState } from "vuex";
 const OpenStatus = {
     1: "未知",
     2: "营业中",
@@ -223,6 +228,13 @@ export default {
             }
             if (paid && contracted) {
                 return "售后中";
+            }
+        },
+        currentProcess(orderDetail) {
+            if (orderDetail.aftersales.isEnd === 1) {
+                return 2;
+            } else {
+                return 1;
             }
         }
     }

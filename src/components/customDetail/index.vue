@@ -11,23 +11,24 @@
                     <a-descriptions :column="3">
                         <a-descriptions-item label="客户名称">{{customDetail.name}}</a-descriptions-item>
                         <a-descriptions-item label="客户编号">{{customDetail.cid}}</a-descriptions-item>
-                        <a-descriptions-item label="客户来源">{{customDetail.from_doc.name}}</a-descriptions-item>
-                        <a-descriptions-item label="身份证号">{{customDetail.idcard}}</a-descriptions-item>
-                        <a-descriptions-item label="客户手机">{{customDetail.phone}}</a-descriptions-item>
-                        <a-descriptions-item label="客户微信">{{customDetail.wx}}</a-descriptions-item>
-                        <a-descriptions-item label="客户Q Q">{{customDetail.qq}}</a-descriptions-item>
-                        <a-descriptions-item label="客户Q Q">{{customDetail.qq}}</a-descriptions-item>
-                        <a-descriptions-item label="省/直辖市/自治区">{{customDetail.province}}</a-descriptions-item>
-                        <a-descriptions-item label="市/辖区">{{customDetail.city}}</a-descriptions-item>
-                        <a-descriptions-item label="区/县">{{customDetail.county}}</a-descriptions-item>
-                        <a-descriptions-item label="详细地址">{{customDetail.address}}</a-descriptions-item>
+                        <a-descriptions-item label="客户来源">{{customDetail.fromZn}}</a-descriptions-item>
+                        <a-descriptions-item label="身份证号">{{customDetail.idcard || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="客户手机">{{customDetail.phone || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="客户微信">{{customDetail.wx || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="客户Q Q">{{customDetail.qq || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="客户Q Q">{{customDetail.qq || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="详细地址">{{customDetail.address || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="省/直辖市/自治区">{{customDetail.province || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="市/辖区">{{customDetail.city || '无'}}</a-descriptions-item>
+                        <a-descriptions-item label="区/县">{{customDetail.county || '无'}}</a-descriptions-item>
+
                     </a-descriptions>
                 </div>
                 <div class="extra">
                     <div style="display:flex;width:max-content;width:200px;height:100%;align-items:flex-start;justify-content: center;flex-direction:column">
-                        <a-progress type="circle" :width="90" :percent="100" :strokeColor="customDetail.status_doc.color">
+                        <a-progress type="circle" :width="90" :percent="100" :strokeColor="matchStatus.color">
                             <template v-slot:format>
-                                <span style="font-weight:bold;font-size:18px" :style="{color:customDetail.status_doc.color}">{{customDetail.status_doc.name}}</span>
+                                <span style="font-weight:bold;font-size:18px" :style="{color:matchStatus.color}">{{matchStatus.name}}</span>
                             </template>
                         </a-progress>
                     </div>
@@ -37,25 +38,25 @@
         <a-row :gutter="20" style="margin-top:20px">
             <a-col :span="24">
                 <a-card title="订单列表">
-                    <a-table :dataSource="orderList" rowKey="oid" :columns="orderColumns">
+                    <a-table :dataSource="orderList" rowKey="oid" :columns="orderColumns" :pagination="false">
                         <span slot="oid" slot-scope="text">
                             <router-link :to="{path:'/orderDetail',query:{oid:text}}">{{text}}</router-link>
                         </span>
-                        <span slot="amount" slot-scope="text">
+                        <span slot="money" slot-scope="text">
                             {{text |numformat}}
                         </span>
                         <span slot="createTime" slot-scope="text">
                             {{text |dateformat}}
                         </span>
                         <span slot="hadreceipt" slot-scope="text,record">
-                            {{ record.payList.reduce((pay1,pay2)=>pay1.money||0 + pay2.money || 0,0) | numformat}}
+                            {{getPaidMoney(record) | numformat}}
                         </span>
                         <span slot="contract" slot-scope="text,record">
-                            {{record.contractList.length == 0?'未签':record.contractList[0].way == 1?'法大大电子合同':'现场签约'}}
+                            {{record.contract.way === 1 ? '法大大电子合同':record.contract.way === 2?'现场签约':'暂未签约'}}
                         </span>
-                        <span slot="status" slot-scope="text,record">
+                        <!-- <span slot="status" slot-scope="text,record">
                             {{getOrderStatus(record)}}
-                        </span>
+                        </span> -->
                     </a-table>
                 </a-card>
             </a-col>
@@ -69,8 +70,20 @@
 <script>
 import { getList as getCustomDetail } from "@/myapi/custom.js";
 import { getList } from "@/myapi/order.js";
-
+import { mapState } from "vuex";
 export default {
+    computed: {
+        ...mapState({
+            customStatusList: state => state.appconfig.customStatusList
+        }),
+        matchStatus() {
+            return (
+                this.customStatusList.find(
+                    s => s.id === this.customDetail.status
+                ) || {}
+            );
+        }
+    },
     data() {
         return {
             spinning: false,
@@ -87,12 +100,12 @@ export default {
                 },
                 {
                     title: "套餐",
-                    dataIndex: "mealInfo.name"
+                    dataIndex: "mealName"
                 },
                 {
                     title: "订单金额",
-                    dataIndex: "amount",
-                    scopedSlots: { customRender: "amount" }
+                    dataIndex: "money",
+                    scopedSlots: { customRender: "money" }
                 },
                 {
                     title: "已收金额",
@@ -101,7 +114,7 @@ export default {
                 },
                 {
                     title: "创建人",
-                    dataIndex: "creatorInfo.name"
+                    dataIndex: "creatorName"
                 },
                 {
                     title: "创建时间",
@@ -116,12 +129,12 @@ export default {
                     title: "签订合同",
                     dataIndex: "contract",
                     scopedSlots: { customRender: "contract" }
-                },
-                {
-                    title: "订单状态",
-                    dataIndex: "status",
-                    scopedSlots: { customRender: "status" }
                 }
+                // {
+                //     title: "订单状态",
+                //     dataIndex: "status",
+                //     scopedSlots: { customRender: "status" }
+                // }
             ]
         };
     },
@@ -133,7 +146,12 @@ export default {
             this.getCustomDetail();
             this.getOrderList();
         },
-
+        getPaidMoney(order) {
+            let total = order.payList.reduce((p1, p2) => {
+                return p1 + (p2.money || 0);
+            }, 0);
+            return total;
+        },
         async getCustomDetail() {
             try {
                 this.spinning = true;
@@ -164,7 +182,7 @@ export default {
             let label = "";
             let paid = order.payList.length > 0;
             let paidChecking = order.payList.some(pay => pay.status == 1); //存在审核中的单据
-            let contracted = order.contractList.length > 0;
+            let contracted = order.contract.ctid;
             let contractedChecking = order.contractList.some(
                 pay => pay.status == 1
             ); //存在审核中 的合同

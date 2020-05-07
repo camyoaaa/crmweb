@@ -128,7 +128,6 @@ export function changePhone(data) {
 }
 
 export function updateUserinfo(data) {
-  console.log(data)
   return kaxios({
     url: '/auth/modinfo',
     method: 'put',

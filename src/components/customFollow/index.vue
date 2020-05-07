@@ -4,9 +4,7 @@
             <a-col :span="13">
                 <a-card>
                     <div slot="title">
-                        <router-link :to="{ path: '/customerService' }">
-                            <a-button type="link" icon="arrow-left"></a-button>
-                        </router-link>
+                        <a-button type="link" icon="arrow-left" @click="$router.go(-1)"></a-button>
                         客户详情
                     </div>
                     <a-form>
@@ -83,7 +81,7 @@
 </template>
 
 <script>
-import { getList, modify } from "@/myapi/custom.js";
+import { getList, updateCustom } from "@/myapi/custom.js";
 import { mapState } from "vuex";
 export default {
     name: "customDetail",
@@ -96,14 +94,24 @@ export default {
         ...mapState({
             userAvatar: state => state.user.avatar,
             userAccount: state => state.user.account,
-            userName: state => state.user.name
+            userName: state => state.user.name,
+            role: state => state.user.role,
+            roleList: state => state.appconfig.appRoleList
         }),
         cid() {
             return this.$route.query.cid;
         }
     },
     created() {
-        this.getCustomInfo();
+        if (
+            ["管理员", "销售员", "销售经理"].includes(
+                this.roleList.find(r => r.id === this.role).name
+            )
+        ) {
+            this.getCustomInfo();
+        } else {
+            this.$router.push({ path: "/403" });
+        }
     },
     methods: {
         async getCustomInfo() {
@@ -115,7 +123,8 @@ export default {
         },
         async handleSubmit() {
             try {
-                let result = await modify(this.custom);
+                let { cid, ...payload } = this.custom;
+                let result = await updateCustom({ cids: [cid], ...payload });
                 if (result.status == 200) {
                     this.getCustomInfo();
                 } else {

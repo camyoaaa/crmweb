@@ -2,7 +2,7 @@
     <a-config-provider :locale="zh_CN">
         <div id="app">
             <!-- <img src="./assets/logo.png"> -->
-            <socket-control />
+            <socket-control ref="socketControl" />
             <router-view />
         </div>
     </a-config-provider>
@@ -18,10 +18,41 @@ moment.locale("zh-cn");
 export default {
     name: "App",
     components: { SocketControl },
+    provide: function() {
+        return {
+            addCallback: this.addCallback,
+            globalData: ["test"],
+            reload: this.reload
+        };
+    },
     data() {
         return {
-            zh_CN
+            zh_CN,
+            socketControl: this.$refs.socketControl,
+            callbacks: [],
+            isRouterAlive: true
         };
+    },
+    created() {
+        console.log("$route.query", this.$route);
+    },
+    computed: {
+        routekey() {
+            return this.$route.query;
+        }
+    },
+    methods: {
+        addCallback(callback) {
+            if (typeof callback === "function") {
+                this.callbacks.push(callback);
+            }
+        },
+        reload() {
+            this.isRouterAlive = false;
+            this.$nextTick(() => {
+                this.isRouterAlive = true;
+            });
+        }
     }
 };
 </script>
