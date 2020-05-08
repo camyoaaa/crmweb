@@ -79,6 +79,7 @@ export default {
 
   created() {
     this.form.account = this.user.account;
+    this.form.password = this.user.password;
     this.form.name = this.user.name;
     this.form.phone = this.user.phone;
     this.form.qq = this.user.qq;
