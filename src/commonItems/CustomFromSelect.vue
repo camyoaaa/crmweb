@@ -4,6 +4,7 @@
     @change="selectChange"
     buttonStyle="solid"
     style="width:100%"
+    placeholder="请选择客户来源"
   >
     <a-select-option
       v-for="(ra, index) in radios"

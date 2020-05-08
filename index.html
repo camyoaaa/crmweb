@@ -218,9 +218,10 @@
     </div>
     <script>
       setInterval(function () {
-        document.querySelectorAll(".dots")[0].classList.remove('animate');
+        let dot0 = document.querySelectorAll(".dots")[0];
+        dot0 && dot0.classList && dot0.classList.remove('animate');
         setTimeout(function () {
-          document.querySelectorAll(".dots")[0].classList.add('animate');
+          dot0 && dot0.classList && dot0.classList.add('animate');
         }, 200);
       }, 3750);
 
