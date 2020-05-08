@@ -30,7 +30,14 @@
             ]" />
                 </a-form-item>
                 <a-form-item label="员工角色" :labelCol="labelCol" :wrapperCol="wrapperCol">
-                    <role-select v-decorator="['role']" />
+                    <role-select v-decorator="['role',{
+                rules: [
+                  {
+                    required: true,
+                    message: '请选择员工角色'
+                  }
+                ]
+              }]" />
                 </a-form-item>
                 <a-form-item label="工作时间" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <work-in v-decorator="[

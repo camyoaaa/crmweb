@@ -20,7 +20,14 @@
                     <custom-from-select preselect v-decorator="['from']" />
                 </a-form-item>
                 <a-form-item label="分配销售" :labelCol="labelCol" :wrapperCol="wrapperCol" v-if="visible">
-                    <staff-select role-name="销售员" v-decorator="['seller']" detail />
+                    <staff-select role-name="销售员" v-decorator="['seller',{
+                        rules: [
+                  {
+                    required: true,
+                    message: '请选择销售',
+                    trigger:'change'
+                  }
+                ]}]" detail />
                 </a-form-item>
                 <a-form-item label="手机号码" :labelCol="labelCol" :wrapperCol="wrapperCol">
                     <id-input v-decorator="['phone']" placeholder="请输入客户手机" />

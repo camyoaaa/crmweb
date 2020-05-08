@@ -8,9 +8,9 @@
             <a-tab-pane key="2" tab="客户来源">
                 <customFromManage />
             </a-tab-pane>
-            <a-tab-pane key="3" tab="支付设置">
+            <!-- <a-tab-pane key="3" tab="支付设置">
                 <paywayManage />
-            </a-tab-pane>
+            </a-tab-pane> -->
         </a-tabs>
     </div>
 </template>
