@@ -51,7 +51,7 @@
                         </a-col>
                         <a-col :span="12">
                             <a-form-model-item label="收款账号" prop="account">
-                                <id-input v-model="receipt.account" />
+                                <a-input v-model="receipt.account" />
                             </a-form-model-item>
                         </a-col>
                         <a-col :span="12">

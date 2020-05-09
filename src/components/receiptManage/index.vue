@@ -35,7 +35,7 @@
                     </a-col>
                     <a-col :md="6" :sm="24">
                         <a-form-item label="收款账号">
-                            <id-input v-model="queryParam.account" placeholder="输入收款账号" />
+                            <a-input v-model="queryParam.account" placeholder="输入收款账号" />
                         </a-form-item>
                     </a-col>
                     <a-col :md="6" :sm="24">
