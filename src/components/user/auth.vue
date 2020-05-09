@@ -21,6 +21,7 @@
                 v-model="account"
                 placeholder="请输入员工号"
                 class="zhuce_num"
+                @keyup.enter="mysubmit"
               />
               <input
                 v-model="password"
@@ -29,6 +30,7 @@
                   mode == 'login' ? '请输入密码' : '请设置密码（6-16位）'
                 "
                 class="zhuce_psd"
+                @keyup.enter="mysubmit"
               />
               <!-- <org-tree-select v-if="mode == 'regist'" single-select v-model="departmentPost" style="width:100%;margin-bottom:20px" /> -->
               <div class="denglu_zidong" v-if="mode == 'login'">
