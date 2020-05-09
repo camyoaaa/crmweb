@@ -171,6 +171,7 @@ export default {
                 let result = await modify(this.form);
                 if (result.status == 200) {
                     this.getAftersaleInfo();
+                    this.$router.go(-1);
                 } else {
                     throw new Error("更新失败");
                 }

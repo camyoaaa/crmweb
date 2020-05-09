@@ -127,6 +127,7 @@ export default {
                 let result = await updateCustom({ cids: [cid], ...payload });
                 if (result.status == 200) {
                     this.getCustomInfo();
+                    this.$router.go(-1);
                 } else {
                     throw new Error("更新失败");
                 }
