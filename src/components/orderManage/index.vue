@@ -238,6 +238,10 @@ export default {
     })
   },
   created() {
+    if (!this.$auth("orderManage.search")) {
+      this.$router.push({ path: "/403" });
+      return;
+    }
     let preQuery = this.$route.query;
     let toNumber = [
       "oid",

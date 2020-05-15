@@ -62,7 +62,7 @@
                         </a-form-item>
                     </a-col>
                     <a-col :md="6" :sm="24">
-                        <a-form-item label="运营老师">
+                        <a-form-item label="售后员">
                             <staff-select v-model="queryParam.executor" role-name="售后员"></staff-select>
                         </a-form-item>
                     </a-col>
@@ -140,6 +140,10 @@ export default {
         })
     },
     created() {
+        if (!this.$auth("aftersaleManage.search")) {
+            this.$router.push({ path: "/403" });
+            return;
+        }
         let preQuery = this.$route.query;
         let toNumber = [
             "orderid",
@@ -233,7 +237,7 @@ export default {
                     scopedSlots: { customRender: "followRecord" }
                 },
                 {
-                    title: "运营老师",
+                    title: "售后员",
                     dataIndex: "executorName",
                     scopedSlots: { customRender: "executorName" }
                 },

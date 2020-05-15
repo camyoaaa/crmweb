@@ -239,6 +239,10 @@ export default {
     })
   },
   created() {
+    if (!this.$auth("contractManage.search")) {
+      this.$router.push({ path: "/403" });
+      return;
+    }
     let preQuery = this.$route.query;
     let toNumber = [
       "ctid",

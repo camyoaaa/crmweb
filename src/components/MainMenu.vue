@@ -26,7 +26,17 @@ export default {
             role: state => state.user.role,
             roleList: state => state.appconfig.appRoleList,
             department: state => state.user.department,
-            post: state => state.user.post
+            post: state => state.user.post,
+            rolePermissions: state => state.permission.rolePermissions,
+            roleEn() {
+                return this.roleList.find(r => r.id === this.role).en;
+            },
+            currentPermission() {
+                console.log(
+                    this.rolePermissions.find(r => r.roleEn === this.roleEn)
+                );
+                return this.rolePermissions.find(r => r.roleEn === this.roleEn);
+            }
         }),
         ...mapGetters(["addRoutes"]),
         MenuList() {
@@ -40,7 +50,10 @@ export default {
                                 "管理员"
                         );
                     } else {
-                        return !m.hidden;
+                        let ps = this.currentPermission[
+                            this.lowerFirst(m.name)
+                        ];
+                        return !m.hidden && (ps ? ps.length > 0 : true);
                     }
                 });
         }
@@ -54,6 +67,9 @@ export default {
         }
     },
     methods: {
+        lowerFirst(str = "") {
+            return str.replace(str[0], str[0].toLowerCase());
+        },
         updateMenu() {
             const routes = this.$route.matched.concat();
             console.log(

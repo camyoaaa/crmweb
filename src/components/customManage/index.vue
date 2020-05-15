@@ -291,6 +291,10 @@ export default {
     })
   },
   created() {
+    if (!this.$auth("customManage.search")) {
+      this.$router.push({ path: "/403" });
+      return;
+    }
     let preQuery = this.$route.query;
     let toNumber = ["cid", "receptionist", "lastSeller", "seller", "status"];
     for (const key in preQuery) {

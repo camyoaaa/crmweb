@@ -42,7 +42,7 @@ export default {
             this.fileList = fileList.filter(file => {
                 return (
                     (file.type === "image/jpeg" || file.type === "image/png") &&
-                    file.size / 1024 / 1024 < 2
+                    file.size / 1024 <= 500
                 );
             });
         },
@@ -68,9 +68,9 @@ export default {
                 this.$message.error("You can only upload JPG file!");
                 return false;
             }
-            const isLt2M = file.size / 1024 / 1024 < 2;
-            if (!isLt2M) {
-                this.$message.error("Image must smaller than 2MB!");
+            const isLt500KB = file.size / 1024 <= 500;
+            if (!isLt500KB) {
+                this.$message.error("Image must smaller than 500KB!");
                 return false;
             }
             this.$emit("change", file);

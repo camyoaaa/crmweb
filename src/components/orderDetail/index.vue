@@ -15,7 +15,7 @@
                             {{orderDetail.mealInfo.name}}
                         </a-descriptions-item>
                         <a-descriptions-item label="创建时间">{{orderDetail.createTime | dateformat}}</a-descriptions-item>
-                        <a-descriptions-item label="活动赠送"> 2 次</a-descriptions-item>
+                        <!-- <a-descriptions-item label="活动赠送"> 2 次</a-descriptions-item> -->
                         <a-descriptions-item label="订单备注">{{orderDetail.remark}}</a-descriptions-item>
                     </a-descriptions>
                 </div>
@@ -76,7 +76,7 @@
                         <a-list-item :key="index" v-for="(item, index) in orderDetail.payreceiptList">
                             <a-list-item-meta>
                                 <image-preview slot="avatar" :src="item.shot" class="shotimg" />
-                                <ellipsis slot="description" :length="18" tooltip>{{item.content}}</ellipsis>
+                                <ellipsis slot="description" :length="14" tooltip>{{item.content}}</ellipsis>
                                 <a-statistic slot="title" :precision="2" :valueStyle="{fontSize:'16px'}" :value="item.money" />
                             </a-list-item-meta>
                             <div class="list-content">
@@ -99,7 +99,7 @@
                                 <div class="list-content-item">
                                     <span>状态</span>
                                     <p>
-                                        <a-badge :status="item.status==1?'processing':item.status==2?'success':'error'" :text="item.status==1?'审核中':item.status==2?'通过':'未通过'"></a-badge>
+                                        <a-badge :status="getStatusprocess(item.status)" :text="getStatusZn(item.status)"></a-badge>
                                     </p>
                                 </div>
                             </div>
@@ -128,7 +128,8 @@
                                 <div class="list-content-item">
                                     <span>状态</span>
                                     <p>
-                                        <a-badge :status="item.status==1?'processing':item.status==2?'success':'error'" :text="item.status==1?'审核中':item.status==2?'通过':'未通过'"></a-badge>
+                                        <a-badge :status="getStatusprocess(item.status)" :text="getStatusZn(item.status)"></a-badge>
+                                        <!-- <a-badge :status="item.status==1?'processing':item.status==2?'success':'error'" :text="item.status==1?'审核中':item.status==2?'通过':'未通过'"></a-badge> -->
                                     </p>
 
                                 </div>
@@ -164,6 +165,11 @@ const ActivityStatus = {
     3: "已完成"
 };
 export default {
+    computed: {
+        ...mapState({
+            reviewStatusList: state => state.appconfig.reviewStatusList
+        })
+    },
     data() {
         return {
             spinning: false,
@@ -182,6 +188,19 @@ export default {
         this.getOrderDetail();
     },
     methods: {
+        getStatusZn(status) {
+            return this.reviewStatusList.find(s => s.id === status).name;
+        },
+        getStatusprocess(status) {
+            let zn = this.getStatusZn(status);
+            if (zn === "等待审核") {
+                return "processing";
+            } else if (zn === "审核通过") {
+                return "success";
+            } else {
+                return "error";
+            }
+        },
         async getOrderDetail() {
             try {
                 this.spinning = true;

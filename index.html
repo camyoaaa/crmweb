@@ -2,9 +2,9 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>webpack_crm</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>客多达客户管理系统</title>
   <style>
     * {
       padding: 0;
@@ -22,8 +22,20 @@
     }
 
     body {
-      background: -webkit-linear-gradient(45deg, #6fc7b5 0%, #13bdce 20%, #0094d9 40%, #5a3694 60%, #ee4d74 80%, #f58c58 100%);
-      background: linear-gradient(45deg, #6fc7b5 0%, #13bdce 20%, #0094d9 40%, #5a3694 60%, #ee4d74 80%, #f58c58 100%);
+      background: -webkit-linear-gradient(45deg,
+          #6fc7b5 0%,
+          #13bdce 20%,
+          #0094d9 40%,
+          #5a3694 60%,
+          #ee4d74 80%,
+          #f58c58 100%);
+      background: linear-gradient(45deg,
+          #6fc7b5 0%,
+          #13bdce 20%,
+          #0094d9 40%,
+          #5a3694 60%,
+          #ee4d74 80%,
+          #f58c58 100%);
       background-size: 600%;
       background-position: 0% 100%;
       -webkit-animation: gradient 7.5s ease-in-out infinite;
@@ -219,15 +231,15 @@
     <script>
       setInterval(function () {
         let dot0 = document.querySelectorAll(".dots")[0];
-        dot0 && dot0.classList && dot0.classList.remove('animate');
+        dot0 && dot0.classList && dot0.classList.remove("animate");
         setTimeout(function () {
-          dot0 && dot0.classList && dot0.classList.add('animate');
+          dot0 && dot0.classList && dot0.classList.add("animate");
         }, 200);
       }, 3750);
 
     </script>
-    <script src="https://cdn.bootcss.com/babel-polyfill/6.23.0/polyfill.min.js"></script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/babel-polyfill/7.8.7/polyfill.min.js"></script>
+    <!-- <script src="https://cdn.bootcss.com/babel-polyfill/6.23.0/polyfill.min.js"></script> -->
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/babel-polyfill/7.8.7/polyfill.min.js"></script> -->
   </div>
   <!-- built files will be auto injected -->
 </body>

@@ -178,8 +178,7 @@ const _CONSTANTS_ROUTERS = [{
             }
           },
         ]
-      },
-
+      }
     ]
   },
   {
@@ -193,7 +192,11 @@ const _CONSTANTS_ROUTERS = [{
   {
     path: '/500',
     component: () => import('@/components/exception/500.vue')
-  }
+  },
+  {
+    path: '*',
+    redirect: '/404'
+  },
 ]
 
 export default _CONSTANTS_ROUTERS
