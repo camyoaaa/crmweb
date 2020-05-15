@@ -30,15 +30,6 @@ export function getOrderDetail(oid) {
   })
 }
 
-export function getPaidPassedOrderList(parameter) {
-  return kaxios({
-    url: '/order/paidPassedOrderList',
-    method: 'get',
-    params: parameter
-  })
-}
-
-
 export function add(parameter) { //新建订单
   return kaxios({
     url: '/order/add',

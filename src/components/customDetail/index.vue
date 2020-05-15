@@ -88,8 +88,6 @@ export default {
         return {
             spinning: false,
             customDetail: {
-                status_doc: {},
-                from_doc: {}
             },
             orderList: [],
             orderColumns: [
